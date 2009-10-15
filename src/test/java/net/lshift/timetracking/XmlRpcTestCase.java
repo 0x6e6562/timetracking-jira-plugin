@@ -26,8 +26,8 @@ public class XmlRpcTestCase extends TestCase
         String token = (String) xmlrpc.execute("jira1.login", makeParams("admin", "password"));
         assertNotNull(token);
 
-        String time = (String) xmlrpc.execute("jira2.trackTime", makeParams(token));
-        assertEquals("helloworld", time);
+        String worklogId = (String) xmlrpc.execute("jira2.trackTime", makeParams(token));
+        Long.parseLong(worklogId);
     }
 
     private static Vector makeParams(Object p1)

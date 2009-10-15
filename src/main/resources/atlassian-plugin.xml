@@ -1,4 +1,4 @@
-<atlassian-plugin key="com.atlassian.jira.ext.rpc" i18n-name-key="admin.web.rpc.plugin.name" name="RPC JIRA Plugin">
+<atlassian-plugin key="net.lshift.net.timetracking" i18n-name-key="admin.web.rpc.plugin.name" name="Timetracking :-) Plugin">
     <plugin-info>
         <description key="admin.web.timetracking.plugin.desc">${pom.description}</description>
         <version>${pom.version}</version>
@@ -6,14 +6,14 @@
         <vendor name="${pom.organization.name}" url="${pom.organization.url}"/>
     </plugin-info>
 
-    <resource type="i18n" name="i18n" location="com.atlassian.jira.ext.rpc.rpc_plugin"/>
+    <!--resource type="i18n" name="i18n" location="com.atlassian.jira.ext.rpc.rpc_plugin"/-->
 
     <!--component system="true" key="tokenManager" i18n-name-key="admin.web.rpc.plugin.token.manager.name"
                name="Token Manager" class="com.atlassian.jira.rpc.auth.TokenManagerImpl">
         <interface>com.atlassian.jira.rpc.auth.TokenManager</interface>
     </component-->
 
-    <rpc-xmlrpc key="xmlrpc2" name="System XML-RPC Services2" class="net.lshift.timetracking.TimeTracking">
+    <rpc-xmlrpc key="xmlrpc2" name="System XML-RPC Services2" class="net.lshift.timetracking.TimeTrackingService">
         <description>Time tracking service</description>
         <service-path>jira2</service-path>
     </rpc-xmlrpc>

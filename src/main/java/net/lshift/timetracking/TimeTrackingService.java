@@ -9,6 +9,7 @@ import com.atlassian.jira.user.util.UserManager;
 import com.opensymphony.user.User;
 
 import java.util.Date;
+import java.util.Vector;
 
 public class TimeTrackingService implements TimeTracking {
 
@@ -26,7 +27,7 @@ public class TimeTrackingService implements TimeTracking {
         this.issueManager = issueManager;
     }
 
-    public String trackTime(String csv) {
+    public Vector<String> trackTime(String csv) {
 
         // Loop over the whole file
         
@@ -52,6 +53,10 @@ public class TimeTrackingService implements TimeTracking {
 
         Worklog updatedWorklog = worklogManager.create(user, worklog, newEstimate, dispatchEvent);
 
-        return updatedWorklog.getId().toString();
+        Vector<String> results = new Vector<String>();
+
+        results.add(updatedWorklog.getId().toString());
+
+        return results;
     }
 }

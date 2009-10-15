@@ -1,7 +1,9 @@
 package net.lshift.timetracking;
 
+import java.util.Vector;
+
 
 public interface TimeTracking {
 
-    String trackTime(String csv);
+    Vector<String> trackTime(String csv);
 }

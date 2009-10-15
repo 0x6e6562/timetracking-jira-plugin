@@ -28,8 +28,12 @@ public class TimeTrackingService implements TimeTracking {
 
     public String trackTime(String csv) {
 
-        User user = userManager.getUser("admin");
-        Issue issue = issueManager.getIssueObject("ABC-1");
+        // Loop over the whole file
+        
+        TimeTrackingEntry entry = new TimeTrackingEntry(csv);
+
+        User user = userManager.getUser(entry.getUser());
+        Issue issue = issueManager.getIssueObject(entry.getIssue());
 
         Long id = null;
         String author = "";

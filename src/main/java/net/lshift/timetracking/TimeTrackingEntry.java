@@ -9,10 +9,10 @@ public class TimeTrackingEntry {
     }
 
     public String getUser() {
-        return user;
+        return "admin";
     }
 
     public String getIssue() {
-        return issue;
+        return "ABC-1";
     }
 }

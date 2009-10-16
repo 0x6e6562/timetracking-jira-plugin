@@ -62,7 +62,7 @@ public class TimeMachine {
         }
 
         Long id = null;
-        String author = "";
+        String author = entry.getUser();
         String comment = "";
         Date startDate = entry.getDate();
         String groupLevel = "";

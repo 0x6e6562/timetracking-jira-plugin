@@ -1,9 +1,3 @@
-/*
- * Created by IntelliJ IDEA.
- * User: Mike
- * Date: Aug 9, 2004
- * Time: 4:09:01 PM
- */
 package net.lshift.timetracking;
 
 import junit.framework.TestCase;

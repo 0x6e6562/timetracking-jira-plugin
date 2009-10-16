@@ -39,6 +39,7 @@ Configuration
 
 This plugin requires that the administrator turns on XML RPC requests in JIRA.
 
+Known Limitations
 -----------------
 
 - There is not limitation on the depth of worklog items - this should probably be limited to the current working month

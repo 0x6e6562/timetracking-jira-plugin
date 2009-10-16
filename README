@@ -3,8 +3,7 @@ JIRA Timetracking Plugin
 
 This plugin allows a remote client to submit time tracking data in CSV format to Jira.
 
-The motivation behind this is to provide an automated yet simple way of synchronizing an external time tracking database
-with the time tracking reporting facilities in JIRA.
+The motivation behind this is to provide an automated yet simple way of synchronizing an external time tracking database with the time tracking reporting facilities in JIRA.
 
 An external process can produce an aggregate time tracking report for each user, issue and date in CSV.
 
@@ -12,8 +11,7 @@ This is then uploaded by the XML-RPC interface already provided by JIRA.
 
 This process can run as often as it likes, though running a daily scheduled task seems to be a sensible option.
 
-For each timetracking entry that the plugin processes, it determines whether a new entry should be created or whether
-an existing entry should be updated.
+For each timetracking entry that the plugin processes, it determines whether a new entry should be created or whether an existing entry should be updated.
 
 CSV Format
 ----------

@@ -6,28 +6,38 @@
  */
 package net.lshift.timetracking;
 
-import com.atlassian.core.util.RandomGenerator;
 import junit.framework.TestCase;
 import org.apache.xmlrpc.XmlRpcClient;
-import org.apache.xmlrpc.XmlRpcException;
 import org.apache.commons.io.IOUtils;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.Vector;
+import java.util.*;
 import java.io.InputStream;
-import java.io.StringReader;
 import java.io.StringWriter;
 
-public class XmlRpcTestCase extends TestCase
-{
+public class XmlRpcTestCase extends TestCase {
+
+    static final String PATH = "timetracking";
+    static final String TRACK_TIME = PATH + "." + "trackTime";
+    static final String LOGIN = "jira1.login";
+
+    String server;
+    String user;
+    String password;
+
+    @Override
+    public void setUp() throws Exception {
+        InputStream is = getClass().getClassLoader().getResourceAsStream("jira-instance.properties");
+        Properties props = new Properties();
+        props.load(is);
+        server = "http://" + props.get("host") + ":" + props.get("port") + "/rpc/xmlrpc";
+        user = (String) props.get("user");
+        password = (String) props.get("password");
+    }
+
     public void testServer() throws Exception {
 
-        final String server = "http://localhost:8080/rpc/xmlrpc";
         XmlRpcClient xmlrpc = new XmlRpcClient(server);
-        String token = (String) xmlrpc.execute("jira1.login", makeParams("admin", "password"));
+        String token = (String) xmlrpc.execute(LOGIN, makeParams(user, password));
         assertNotNull(token);
 
         InputStream is = getClass().getClassLoader().getResourceAsStream("test2.csv");
@@ -35,7 +45,7 @@ public class XmlRpcTestCase extends TestCase
         IOUtils.copy(is, writer);
         String csv = writer.toString();
 
-        Vector<String> worklogIds = (Vector<String>) xmlrpc.execute("jira2.trackTime", makeParams(token, csv));
+        Vector<String> worklogIds = (Vector<String>) xmlrpc.execute(TRACK_TIME, makeParams(token, csv));
         assertNotNull(worklogIds);
         assertEquals(1, worklogIds.size());
     }

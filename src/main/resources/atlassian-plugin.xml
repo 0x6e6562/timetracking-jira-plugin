@@ -1,23 +1,23 @@
-<atlassian-plugin key="net.lshift.net.timetracking" i18n-name-key="admin.web.rpc.plugin.name" name="Timetracking :-) Plugin">
-    <plugin-info>
-        <description key="admin.web.timetracking.plugin.desc">${pom.description}</description>
-        <version>${pom.version}</version>
-        <application-version min="4.0" max="4.0"/>
-        <vendor name="${pom.organization.name}" url="${pom.organization.url}"/>
-    </plugin-info>
+<atlassian-plugin key="net.lshift.net.timetracking"
+                  name="Timetracking Plugin :-)">
 
-    <!--resource type="i18n" name="i18n" location="com.atlassian.jira.ext.rpc.rpc_plugin"/-->
+  <plugin-info>
+    <description key="admin.web.timetracking.plugin.desc">${pom.description}</description>
+    <version>${pom.version}</version>
+    <application-version min="4.0" max="4.0"/>
+    <vendor name="${pom.organization.name}" url="${pom.organization.url}"/>
+  </plugin-info>
 
-    <component system="true" key="worklogManager"
-               name="Worklog Manager" class="com.atlassian.jira.issue.worklog.DefaultWorklogManager">
-        <interface>com.atlassian.jira.issue.worklog.WorklogManager</interface>
-    </component>
+  <component system="true" key="worklogManager"
+             name="Worklog Manager"
+             class="com.atlassian.jira.issue.worklog.DefaultWorklogManager">
+    <interface>com.atlassian.jira.issue.worklog.WorklogManager</interface>
+  </component>
 
-    <rpc-xmlrpc key="xmlrpc2" name="System XML-RPC Services2" class="net.lshift.timetracking.TimeTrackingService">
-        <description>Time tracking service</description>
-        <service-path>jira2</service-path>
-
-    </rpc-xmlrpc>
-
+  <rpc-xmlrpc key="timetracking-plugin" name="Time Tracking Services"
+              class="net.lshift.timetracking.TimeTrackingService">
+    <description>Time tracking service</description>
+    <service-path>timetracking</service-path>
+  </rpc-xmlrpc>
 
 </atlassian-plugin>

@@ -40,7 +40,7 @@ public class XmlRpcTestCase extends TestCase {
         String token = (String) xmlrpc.execute(LOGIN, makeParams(user, password));
         assertNotNull(token);
 
-        InputStream is = getClass().getClassLoader().getResourceAsStream("test2.csv");
+        InputStream is = getClass().getClassLoader().getResourceAsStream("integration-test-data.csv");
         StringWriter writer = new StringWriter();
         IOUtils.copy(is, writer);
         String csv = writer.toString();

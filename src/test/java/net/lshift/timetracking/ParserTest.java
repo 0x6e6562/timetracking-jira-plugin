@@ -4,13 +4,12 @@ import junit.framework.TestCase;
 
 import java.io.InputStream;
 import java.util.List;
-import java.util.Date;
 import java.util.GregorianCalendar;
 
 public class ParserTest extends TestCase {
 
     public void testParse() throws Exception {
-        InputStream is = getClass().getClassLoader().getResourceAsStream("test1.csv");
+        InputStream is = getClass().getClassLoader().getResourceAsStream("unit-test-data.csv");
         List<TimeTrackingEntry> entries = TimeTrackingEntry.parse(is);
         assertNotNull(entries);
         assertEquals(16, entries.size());

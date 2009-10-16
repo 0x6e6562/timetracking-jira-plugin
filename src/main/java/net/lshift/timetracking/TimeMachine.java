@@ -10,6 +10,9 @@ import com.opensymphony.user.User;
 
 
 import java.util.Date;
+import java.util.List;
+import java.util.GregorianCalendar;
+import java.util.Calendar;
 
 import org.apache.log4j.Logger;
 
@@ -23,6 +26,9 @@ public class TimeMachine {
     IssueManager issueManager;
 
 
+    long newEstimate = 0;
+    boolean dispatchEvent = true;
+
     public TimeMachine(WorklogManager worklogManager, UserManager userManager, IssueManager issueManager) {
         this.worklogManager = worklogManager;
         this.userManager = userManager;
@@ -30,6 +36,9 @@ public class TimeMachine {
     }
 
     Worklog createWorklogItem(TimeTrackingEntry entry) {
+
+        Worklog worklog = null;
+
         User user = userManager.getUser(entry.getUser());
 
         if (user == null) throw new RuntimeException("Could not resolve user: " + entry.getUser());
@@ -41,24 +50,56 @@ public class TimeMachine {
 
         log.info("Resolved issue: " + issue.getKey());
 
+
+        // This could potentially be a very expensive thing to do if you have an issue with many worklogs
+        // If this becomes an issue, we'll have to use the underlying entity manager
+        List<Worklog> items =  worklogManager.getByIssue(issue);
+        for (Worklog existing : items) {
+            if (sameDay(existing.getStartDate(), entry.getDate())) {
+                worklog = existing;
+                break;
+            }
+        }
+
         Long id = null;
         String author = "";
         String comment = "";
         Date startDate = entry.getDate();
         String groupLevel = "";
         Long roleLevelId = null;
-        Long timeSpent = entry.getTimeSpent();
+        Long timeSpent = entry.getTimeSpent() * 60;
 
-        Worklog worklog = new WorklogImpl(worklogManager, issue, id, author, comment,
-                startDate, groupLevel, roleLevelId, timeSpent);
+        if (null == worklog) {
+            worklog = new WorklogImpl(worklogManager, issue, id, author, comment,
+                                      startDate, groupLevel, roleLevelId, timeSpent);
+            log.info("Creating new worklog item for entry: " + entry);
+            worklog = worklogManager.create(user, worklog, newEstimate, dispatchEvent);
+        }
+        else if (!worklog.getTimeSpent().equals(timeSpent)){
+            worklog = new WorklogImpl(worklogManager, issue, worklog.getId(), worklog.getAuthor(), worklog.getComment(),
+                                      worklog.getStartDate(), worklog.getGroupLevel(), worklog.getRoleLevelId(),
+                                      timeSpent);
+            log.info("Updating existing worklog item for entry: " + entry);
+            worklog = worklogManager.update(user, worklog, newEstimate, dispatchEvent);
+        }
 
-        long newEstimate = 0;
+        return worklog;
+    }
 
-        boolean dispatchEvent = true;
-
-        log.info("Creating new worklog item for entry: " + entry);
-
-        return worklogManager.create(user, worklog, newEstimate, dispatchEvent);
+    /**
+     * I hate having to implement date routines but I don't want to have include something like jodatime
+     * into the plugin because I'd need to supply the jar somehow :-(
+     */
+    public boolean sameDay(Date first, Date second) {
+        boolean same = true;
+        Calendar firstCal = new GregorianCalendar();
+        firstCal.setTime(first);
+        Calendar secondCal = new GregorianCalendar();
+        secondCal.setTime(second);
+        same &= firstCal.get(Calendar.YEAR) == secondCal.get(Calendar.YEAR);
+        same &= firstCal.get(Calendar.MONTH) == secondCal.get(Calendar.MONTH);
+        same &= firstCal.get(Calendar.DAY_OF_MONTH) == secondCal.get(Calendar.DAY_OF_MONTH);
+        return same;
     }
 
 }

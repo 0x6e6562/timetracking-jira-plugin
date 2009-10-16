@@ -8,7 +8,7 @@
     </parent>
 
     <artifactId>atlassian-jira-timetracking-plugin</artifactId>
-    <version>4.0</version>
+    <version>0.1</version>
 
     <organization>
       <name>LShift</name>
@@ -68,7 +68,7 @@
       <dependency>
         <groupId>com.atlassian.jira.plugins</groupId>
         <artifactId>atlassian-jira-rpc-plugin</artifactId>
-        <version>4.0</version>
+        <version>${atlassian.product.version}</version>
       </dependency>
 
         <!-- test dependencies -->
@@ -129,7 +129,7 @@
         <dependency>
             <groupId>${pom.groupId}</groupId>
             <artifactId>jira-soapclient</artifactId>
-            <version>${pom.version}</version>
+            <version>${atlassian.product.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

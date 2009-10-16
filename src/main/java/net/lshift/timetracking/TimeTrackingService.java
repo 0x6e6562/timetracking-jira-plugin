@@ -1,62 +1,40 @@
 package net.lshift.timetracking;
 
-import com.atlassian.jira.issue.worklog.WorklogManager;
-import com.atlassian.jira.issue.worklog.Worklog;
-import com.atlassian.jira.issue.worklog.WorklogImpl;
-import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.issue.IssueManager;
+import com.atlassian.jira.issue.worklog.Worklog;
+import com.atlassian.jira.issue.worklog.WorklogManager;
 import com.atlassian.jira.user.util.UserManager;
-import com.opensymphony.user.User;
+import static net.lshift.timetracking.TimeTrackingEntry.parse;
 
-import java.util.Date;
+import java.util.List;
 import java.util.Vector;
+
+import org.apache.log4j.Logger;
 
 public class TimeTrackingService implements TimeTracking {
 
-    WorklogManager worklogManager;
-    UserManager userManager;
-    IssueManager issueManager;
+    private static final Logger log = Logger.getLogger(TimeTrackingService.class);
 
-    public void setWorklogManager(WorklogManager worklogManager) {
-        this.worklogManager = worklogManager;
-    }
+    TimeMachine timeMachine;
 
     public TimeTrackingService(WorklogManager worklogManager, UserManager userManager, IssueManager issueManager) {
-        this.worklogManager = worklogManager;
-        this.userManager = userManager;
-        this.issueManager = issueManager;
+        timeMachine = new TimeMachine(worklogManager, userManager, issueManager);
     }
 
-    public Vector<String> trackTime(String csv) {
-
-        // Loop over the whole file
-        
-        TimeTrackingEntry entry = new TimeTrackingEntry(csv);
-
-        User user = userManager.getUser(entry.getUser());
-        Issue issue = issueManager.getIssueObject(entry.getIssue());
-
-        Long id = null;
-        String author = "";
-        String comment = "";
-        Date startDate = new Date();
-        String groupLevel = "";
-        Long roleLevelId = null;
-        Long timeSpent = 9L;
-
-        Worklog worklog = new WorklogImpl(worklogManager, issue, id, author, comment,
-                                          startDate, groupLevel, roleLevelId, timeSpent);
-
-        long newEstimate = 7;
-
-        boolean dispatchEvent  = true ;
-
-        Worklog updatedWorklog = worklogManager.create(user, worklog, newEstimate, dispatchEvent);
-
+    public Vector<String> trackTime(String token, String csv) {
+        log.debug(csv);
         Vector<String> results = new Vector<String>();
-
-        results.add(updatedWorklog.getId().toString());
-
+        try {
+            List<TimeTrackingEntry> entries = parse(csv);
+            log.info("Processing " + entries.size() + " entries ......");
+            for (TimeTrackingEntry entry : entries) {
+                Worklog worklog = timeMachine.createWorklogItem(entry);
+                results.add(worklog.getId().toString());                
+            }
+        } catch (Exception e) {
+            // TODO Somehow return this exception to the client in an intelligent fashion
+            throw new RuntimeException(e);
+        }
         return results;
     }
 }

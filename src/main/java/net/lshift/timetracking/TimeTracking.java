@@ -5,5 +5,5 @@ import java.util.Vector;
 
 public interface TimeTracking {
 
-    Vector<String> trackTime(String csv);
+    Vector<String> trackTime(String token, String csv);
 }

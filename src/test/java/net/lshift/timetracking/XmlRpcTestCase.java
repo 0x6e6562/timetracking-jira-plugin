@@ -10,12 +10,16 @@ import com.atlassian.core.util.RandomGenerator;
 import junit.framework.TestCase;
 import org.apache.xmlrpc.XmlRpcClient;
 import org.apache.xmlrpc.XmlRpcException;
+import org.apache.commons.io.IOUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Vector;
+import java.io.InputStream;
+import java.io.StringReader;
+import java.io.StringWriter;
 
 public class XmlRpcTestCase extends TestCase
 {
@@ -26,8 +30,12 @@ public class XmlRpcTestCase extends TestCase
         String token = (String) xmlrpc.execute("jira1.login", makeParams("admin", "password"));
         assertNotNull(token);
 
-        Vector<String> worklogIds = (Vector<String>) xmlrpc.execute("jira2.trackTime", makeParams(token));
-        
+        InputStream is = getClass().getClassLoader().getResourceAsStream("test2.csv");
+        StringWriter writer = new StringWriter();
+        IOUtils.copy(is, writer);
+        String csv = writer.toString();
+
+        Vector<String> worklogIds = (Vector<String>) xmlrpc.execute("jira2.trackTime", makeParams(token, csv));
         assertNotNull(worklogIds);
         assertEquals(1, worklogIds.size());
     }

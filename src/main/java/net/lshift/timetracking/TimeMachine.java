@@ -43,12 +43,12 @@ public class TimeMachine {
 
         if (user == null) throw new RuntimeException("Could not resolve user: " + entry.getUser());
 
-        log.info("Resolved user: " + user.getName());
+        log.debug("Resolved user: " + user.getName());
         Issue issue = issueManager.getIssueObject(entry.getIssue());
 
         if (issue == null) throw new RuntimeException("Could not resolve issue: " + entry.getIssue());
 
-        log.info("Resolved issue: " + issue.getKey());
+        log.debug("Resolved issue: " + issue.getKey());
 
 
         // This could potentially be a very expensive thing to do if you have an issue with many worklogs
@@ -72,14 +72,14 @@ public class TimeMachine {
         if (null == worklog) {
             worklog = new WorklogImpl(worklogManager, issue, id, author, comment,
                                       startDate, groupLevel, roleLevelId, timeSpent);
-            log.info("Creating new worklog item for entry: " + entry);
+            log.info("Creating new worklog item for entry (don't forget to times by 60): " + entry);
             worklog = worklogManager.create(user, worklog, newEstimate, dispatchEvent);
         }
         else if (!worklog.getTimeSpent().equals(timeSpent)){
             worklog = new WorklogImpl(worklogManager, issue, worklog.getId(), worklog.getAuthor(), worklog.getComment(),
                                       worklog.getStartDate(), worklog.getGroupLevel(), worklog.getRoleLevelId(),
                                       timeSpent);
-            log.info("Updating existing worklog item for entry: " + entry);
+            log.info("Updating existing worklog item for entry (don't forget to times by 60): " + entry);
             worklog = worklogManager.update(user, worklog, newEstimate, dispatchEvent);
         }
 

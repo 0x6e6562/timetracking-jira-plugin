@@ -27,7 +27,6 @@ public class TimeMachine {
 
 
     long newEstimate = 0;
-    boolean dispatchEvent = true;
 
     public TimeMachine(WorklogManager worklogManager, UserManager userManager, IssueManager issueManager) {
         this.worklogManager = worklogManager;
@@ -55,7 +54,7 @@ public class TimeMachine {
         // If this becomes an issue, we'll have to use the underlying entity manager
         List<Worklog> items =  worklogManager.getByIssue(issue);
         for (Worklog existing : items) {
-            if (sameDay(existing.getStartDate(), entry.getDate())) {
+            if (sameDayForUser(existing, entry)) {
                 worklog = existing;
                 break;
             }
@@ -73,17 +72,29 @@ public class TimeMachine {
             worklog = new WorklogImpl(worklogManager, issue, id, author, comment,
                                       startDate, groupLevel, roleLevelId, timeSpent);
             log.info("Creating new worklog item for entry (don't forget to times by 60): " + entry);
-            worklog = worklogManager.create(user, worklog, newEstimate, dispatchEvent);
+            worklog = worklogManager.create(user, worklog, newEstimate, true);
         }
         else if (!worklog.getTimeSpent().equals(timeSpent)){
             worklog = new WorklogImpl(worklogManager, issue, worklog.getId(), worklog.getAuthor(), worklog.getComment(),
                                       worklog.getStartDate(), worklog.getGroupLevel(), worklog.getRoleLevelId(),
                                       timeSpent);
             log.info("Updating existing worklog item for entry (don't forget to times by 60): " + entry);
-            worklog = worklogManager.update(user, worklog, newEstimate, dispatchEvent);
+            worklog = worklogManager.update(user, worklog, newEstimate, false);
         }
 
         return worklog;
+    }
+
+    /**
+     * Returns true if the time tracking entry is for the same user and day
+     */
+    public boolean sameDayForUser(Worklog existing, TimeTrackingEntry entry) {
+        if (existing.getAuthor().equals(entry.getUser())) {
+            return sameDay(existing.getStartDate(), entry.getDate());
+        }
+        else {
+            return false;
+        }
     }
 
     /**

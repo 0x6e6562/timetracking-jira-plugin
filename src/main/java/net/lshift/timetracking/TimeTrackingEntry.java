@@ -48,15 +48,15 @@ public class TimeTrackingEntry {
         if (line != null) {
             String[] elements = line.split(",");
             assert elements.length == 4;
-            user = elements[0];
-            issue = elements[1];
+            user = elements[0].trim();
+            issue = elements[1].trim();
             DateFormat formatter = new SimpleDateFormat("yyyyy-MM-dd");
             try {
-                date = formatter.parse(elements[2]);
+                date = formatter.parse(elements[2].trim());
             } catch (ParseException e) {
                 throw new RuntimeException(e);
             }
-            timeSpent = Long.parseLong(elements[3]);
+            timeSpent = Long.parseLong(elements[3].trim());
         }
     }
 

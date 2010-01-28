@@ -38,6 +38,8 @@ Configuration
 -------------
 
 This plugin requires that the administrator turns on XML RPC requests in JIRA.
+You will need 2 users in your JIRA instance, one called admin, the other called test.
+You will also need an issue called ABC-1.
 
 Known Limitations
 -----------------

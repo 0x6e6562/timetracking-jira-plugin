@@ -3,6 +3,7 @@ package net.lshift.timetracking;
 import junit.framework.TestCase;
 import org.apache.xmlrpc.XmlRpcClient;
 import org.apache.commons.io.IOUtils;
+import org.apache.xmlrpc.XmlRpcException;
 
 import java.util.*;
 import java.io.InputStream;
@@ -31,7 +32,7 @@ public class XmlRpcTestCase extends TestCase {
     public void testServer() throws Exception {
 
         XmlRpcClient xmlrpc = new XmlRpcClient(server);
-        String token = (String) xmlrpc.execute(LOGIN, makeParams(user, password));
+        String token = (String) executeOrFail(xmlrpc, LOGIN, makeParams(user, password));
         assertNotNull(token);
 
         InputStream is = getClass().getClassLoader().getResourceAsStream("integration-test-data.csv");
@@ -39,9 +40,21 @@ public class XmlRpcTestCase extends TestCase {
         IOUtils.copy(is, writer);
         String csv = writer.toString();
 
-        Vector<String> worklogIds = (Vector<String>) xmlrpc.execute(TRACK_TIME, makeParams(token, csv));
+        Vector<String> worklogIds = (Vector<String>) executeOrFail(xmlrpc, TRACK_TIME, makeParams(token, csv));
+
         assertNotNull(worklogIds);
-        assertEquals(1, worklogIds.size());
+        assertEquals(2, worklogIds.size());
+    }
+
+    private static Object executeOrFail(XmlRpcClient client, String command, Vector args) throws Exception {
+        Object result = client.execute(command, args);
+        if (result instanceof XmlRpcException) {
+            fail(((XmlRpcException)result).getMessage());
+            return null;
+        }
+        else {
+            return result;
+        }
     }
 
     private static Vector makeParams(Object p1)

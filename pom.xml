@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.atlassian.jira.plugins</groupId>
         <artifactId>jira-plugin-base</artifactId>
-        <version>15</version>
+        <version>18</version>
     </parent>
 
     <artifactId>atlassian-jira-timetracking-plugin</artifactId>
@@ -20,6 +20,60 @@
     <packaging>jar</packaging>
 
     <profiles>
+      <profile>
+        <id>defaultProfile</id>
+        <activation>
+          <activeByDefault>true</activeByDefault>
+        </activation>
+        <repositories>
+          <repository>
+            <id>central</id>
+            <url>https://maven.atlassian.com/repository/public</url>
+            <snapshots>
+              <enabled>true</enabled>
+              <updatePolicy>always</updatePolicy>
+              <checksumPolicy>fail</checksumPolicy>
+            </snapshots>
+            <releases>
+              <enabled>true</enabled>
+              <checksumPolicy>fail</checksumPolicy>
+            </releases>
+          </repository>
+
+          <!--
+          Since JIRA is still using Maven 1, this repository is used for
+          those Maven 1 artifacts that aren't available in Maven 2.
+          -->
+          <repository>
+            <id>atlassian-m1-repository</id>
+            <layout>legacy</layout>
+            <url>https://m2proxy.atlassian.com/repository/m1/</url>
+            <releases>
+              <checksumPolicy>warn</checksumPolicy>
+            </releases>
+            <snapshots>
+              <enabled>false</enabled>
+            </snapshots>
+          </repository>
+        </repositories>
+        <pluginRepositories>
+          <pluginRepository>
+            <id>central</id>
+            <url>https://maven.atlassian.com/repository/public</url>
+            <releases>
+              <enabled>true</enabled>
+              <checksumPolicy>fail</checksumPolicy>
+            </releases>
+            <snapshots>
+              <checksumPolicy>fail</checksumPolicy>
+            </snapshots>
+          </pluginRepository>
+        </pluginRepositories>
+        <properties>
+          <downloadSources>true</downloadSources>
+          <downloadJavadocs>true</downloadJavadocs>
+        </properties>
+      </profile>
         <profile>
             <id>bootstrap</id>
             <build>
